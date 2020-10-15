@@ -1,0 +1,18 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name": "client",
+            "image": "vladimirpodr/multi-client",
+            "hostname": "client",
+            "essential": false
+        }
+        {
+            "name": "server",
+            "image": "vladimirpodr/multi-client",
+            "hostname": "api",
+            "essential": false
+
+        }
+    ]
+}
