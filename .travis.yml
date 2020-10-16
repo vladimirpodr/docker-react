@@ -1,0 +1,35 @@
+language: generic
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t vladimirpodr/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true vladimirpodr/react-test npm test
+
+after_success:
+    - docker build -t vladimirpodr/multi-client ./client
+    - docker build -t vladimirpodr/multi-nginx ./nginx
+    - docker build -t vladimirpodr/multi-server ./server
+    - docker build -t vladimirpodr/multi-worker ./worker
+    #Login to the Docker CLI
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    #Push images to Docker Hub
+    - docker push vladimirpodr/multi-client
+    - docker push vladimirpodr/multi-nginx
+    - docker push vladimirpodr/multi-server
+    - docker push vladimirpodr/multi-worker
+
+deploy:
+    provider: elasticbeanstalk
+    region: "us-east-1"
+    app: "multi-docker"
+    env: "MultiDocker-env"
+    bucket_name: "elasticbeanstalk-us-west-2-675473099313"
+    bucket_path: "docker-multi"
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
