@@ -1,0 +1,24 @@
+language: generic
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t vladimirpodr/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - ducker run -e CI=true vladimirpodr/react-test npm test
+
+after_success:
+    - docker build -t vladimirpodr/multi-client -f ./client
+    - docker build -t vladimirpodr/multi-nginx -f ./nginx
+    - docker build -t vladimirpodr/multi-server -f ./server
+    - docker build -t vladimirpodr/multi-worker -f ./worker
+    #Login to the Docker CLI
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    #Push images to Docker Hub
+    - docker push vladimirpodr/multi-client
+    - docker push vladimirpodr/multi-nginx
+    - docker push vladimirpodr/multi-server
+    - docker push vladimirpodr/multi-worker
+
