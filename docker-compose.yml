@@ -5,7 +5,7 @@ services:
         environment:
             - POSTGRES_PASSWORD=postgres_password
     redis:
-        image: 'redis:latest'
+        image: "redis:latest"
     nginx:
         depends_on:
             - api
@@ -51,4 +51,3 @@ services:
         volumes:
             - /app/node_modules
             - ./worker:/app
-
