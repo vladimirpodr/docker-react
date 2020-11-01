@@ -21,4 +21,3 @@ after_success:
     - docker push vladimirpodr/multi-nginx
     - docker push vladimirpodr/multi-server
     - docker push vladimirpodr/multi-worker
-
